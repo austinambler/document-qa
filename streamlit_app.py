@@ -1,5 +1,5 @@
 import streamlit as st
-from openai import OpenAI
+from openai import OpenAI, AuthenticationError
 
 # Show title and description.
 st.title("My Document question answering")
@@ -12,6 +12,19 @@ st.write(
 # Alternatively, you can store the API key in `./.streamlit/secrets.toml` and access it
 # via `st.secrets`, see https://docs.streamlit.io/develop/concepts/connections/secrets-management
 openai_api_key = st.text_input("OpenAI API Key", type="password")
+
+# check to make sure api key is valid
+if openai_api_key:
+    try:
+        client = OpenAI(api_key=openai_api_key)
+        # Lightweight call just to check if the key works
+        client.models.list()
+        st.success("API key is valid ✅")
+    except AuthenticationError:
+        st.error("Invalid OpenAI API key ❌")
+    except Exception as e:
+        st.error(f"Something went wrong: {e}")
+
 if not openai_api_key:
     st.info("Please add your OpenAI API key to continue.", icon="🗝️")
 else:
@@ -44,7 +57,7 @@ else:
 
         # Generate an answer using the OpenAI API.
         stream = client.chat.completions.create(
-            model="gpt-3.5-turbo",
+            model="gpt-4.1",
             messages=messages,
             stream=True,
         )
