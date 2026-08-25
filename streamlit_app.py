@@ -13,6 +13,8 @@ st.write(
 # via `st.secrets`, see https://docs.streamlit.io/develop/concepts/connections/secrets-management
 openai_api_key = st.text_input("OpenAI API Key", type="password")
 
+key_is_valid = False
+
 # check to make sure api key is valid
 if openai_api_key:
     try:
@@ -20,12 +22,13 @@ if openai_api_key:
         # Lightweight call just to check if the key works
         client.models.list()
         st.success("API key is valid ✅")
+        key_is_valid = True
     except AuthenticationError:
         st.error("Invalid OpenAI API key ❌")
     except Exception as e:
         st.error(f"Something went wrong: {e}")
 
-if not openai_api_key:
+if not openai_api_key and key_is_valid == False:
     st.info("Please add your OpenAI API key to continue.", icon="🗝️")
 else:
 
