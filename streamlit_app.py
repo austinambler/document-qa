@@ -28,7 +28,7 @@ if openai_api_key:
     except Exception as e:
         st.error(f"Something went wrong: {e}")
 
-if not openai_api_key and key_is_valid == False:
+if not openai_api_key or not key_is_valid:
     st.info("Please add your OpenAI API key to continue.", icon="🗝️")
 else:
 
